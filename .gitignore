@@ -1,0 +1,4 @@
+./musings-backend/node_modules
+./musings-backend/.env
+./musings-frontend/.env
+./musings-frontend/node_modules
