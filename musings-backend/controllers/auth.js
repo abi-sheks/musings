@@ -6,7 +6,7 @@ const registerUser = async (req, res) => {
     try {
         const { username, password } = req.body
         if (!username || !password) {
-            throw new Error('Please provide email and password')
+            throw new Error('Please provide username and password')
         }
         const user = await User.create({ username: username, password: password });
         const token = user.createJWT();
@@ -21,7 +21,7 @@ const loginUser = async (req, res, next) => {
     try {
         const { username, password } = req.body
         if (!username || !password) {
-            throw new Error('Please provide email and password')
+            throw new Error('Please provide username and password')
         }
         const user = await User.findOne({where : {username : username }})
         if (!user) {

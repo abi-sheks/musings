@@ -6,6 +6,7 @@ const getProjects = async (req, res) => {
     const userID = req.user.id;
     try{
         const projects = await Project.findAll({where : {userID : userID}})
+        console.log(`Returning ${projects}`)
         res.status(StatusCodes.OK).json({projects : projects})
     } catch(error) {
         console.log(error)

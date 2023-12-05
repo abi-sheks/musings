@@ -1,19 +1,21 @@
 const {StatusCodes} = require("http-status-codes")
 const { Task } = require("../models")
 
+//frontend need is for tasks per board and tasks per 
+//tasks per board
+
 const getTasks = async (req, res) => {
     //gets tasks specific to board (for efficiency)
     const userID = req.user.id;
-    //filtering tasks by board using params. fetching all tasks would be stupid.
-    const boardID = req.params.boardID
     try{
-        const tasks = await Task.findAll({where : {userID : userID, boardID : boardID}})
+        const tasks = await Task.findAll({where : {userID : userID}})
         res.status(StatusCodes.OK).json({tasks : tasks})
     } catch(error) {
         console.log(error)
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg : 'The tasks could not be fetched'})
     }
 }
+
 const getTask = async (req, res) => {
     const owner = req.user.id
     const taskID = req.params.taskID
@@ -25,7 +27,7 @@ const getTask = async (req, res) => {
 }
 const createTask = async (req, res) => {
     req.body.userID = req.user.id
-    req.body.boardID = req.params.boardID
+    //need projectID and boardID as well, given through body
     try {
         const task = await Task.create(req.body)
         res.status(StatusCodes.CREATED).json({task : task})

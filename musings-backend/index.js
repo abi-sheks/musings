@@ -27,6 +27,8 @@ app.use("/api/users", userRouter)
 app.use("/api/categories", checkAuth, categoryRouter)
 app.use("/api/projects", checkAuth, projectRouter)
 app.use("/api/boards", checkAuth, boardRouter)
+app.use("/api/notes", checkAuth, noteRouter)
+app.use("/api/tasks", checkAuth, taskRouter)
 //notes and tasks nested under boards, doesn't make sense to access individually
 
 const serve = async () => {

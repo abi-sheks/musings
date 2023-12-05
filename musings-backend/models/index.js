@@ -42,12 +42,17 @@ User.hasMany(Board, {
 });
 Board.belongsTo(User)
 
-//Board/User-Task
+//Board/User/Project-Task
 Board.hasMany(Task, {
     as : "parent_board",
     foreignKey : "boardID"
 });
 Task.belongsTo(Board)
+Project.hasMany(Task, {
+    as : "parent_proj",
+    foreignKey : "projectID"
+});
+Task.belongsTo(Project)
 User.hasMany(Task, {
     foreignKey : "userID"
 });

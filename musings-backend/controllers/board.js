@@ -39,7 +39,7 @@ const editBoard = async (req, res) => {
     if(!board) {
         res.status(StatusCodes.NOT_FOUND).json({msg : 'The board could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted board successfully", board : board})
+    res.status(StatusCodes.OK).json({msg : "Updated board successfully", board : board})
 }
 const deleteBoard = async (req, res) => {
     const owner = req.user.id
