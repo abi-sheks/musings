@@ -1,12 +1,11 @@
 import fetcher from "../fetchers/axios-fetcher"
-import mutater from "../fetchers/axios-mutater"
+import creator from "../fetchers/axios-creator"
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 
 export const useCategories = () =>
 {
     const {data, error, isLoading} = useSWR("http://localhost:8000/api/categories/", fetcher)
-    console.log(`fetched ${data}`)
     return {
         categories : data,
         error,
@@ -15,7 +14,7 @@ export const useCategories = () =>
 }
 
 export const useCreateCategory = () => {
-    const {trigger, isMutating} = useSWRMutation("http://localhost:8000/api/categories/", mutater)
+    const {trigger, isMutating} = useSWRMutation("http://localhost:8000/api/categories/", creator)
     return {
         categoryCreator : trigger,
         categoryCreating : isMutating

@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
+import { Link as RRLink } from 'react-router-dom'
 import { useCategories, useCreateCategory } from '../requests/category'
 import { useProjects } from '../requests/project'
-import { Heading, Button, Grid, GridItem, Flex, Text, Input, Container } from '@chakra-ui/react'
+import {AddIcon} from '@chakra-ui/icons'
+import { Heading, Button, Grid, GridItem, Flex, Text, Input, Link } from '@chakra-ui/react'
+import { CreateProjectModal } from '../components'
 
 const Dashboard = () => {
   const fetcher = (...args) => fetch(...args).then(res => res.json())
@@ -11,25 +14,23 @@ const Dashboard = () => {
 
   const [titleState, setTitleState] = useState("")
 
-  console.log(categories)
-  console.log(projects)
-
   //transfer to utils
   const categoryList = !categoryLoading && categories.categories.map(category => {
     const projectsList = !projectLoading && projects.projects.map(project => {
       if (project.categoryID === category.categoryID) {
         return (
-          <Text>
+          <Link color="secondary" as={RRLink} to={`projects/${project.projectID}`}>
             {project.title}
-          </Text>
+          </Link>
         )
       }
     })
     return (
-      <GridItem key={category.id} bgColor="tertiary" borderRadius="1rem" padding="1rem">
-        <Heading textAlign="center" color="secondary">{category.title}</Heading>
-        <Flex>
+      <GridItem key={category.categoryID} bgColor="tertiary" borderRadius="1rem" padding="1rem" colSpan={1}>
+        <Heading textAlign="center" color="secondary" marginBottom="1rem">{category.title}</Heading>
+        <Flex align="center" direction="column">
           {projectsList}
+          <CreateProjectModal category={category}/>
         </Flex>
       </GridItem>
     )
@@ -37,7 +38,11 @@ const Dashboard = () => {
   //handler
   const handleCreate = async () => {
     try {
-      console.log(titleState)
+      if(titleState === "")
+      {
+        console.log("enter title")
+        return;
+      }
       const result = await categoryCreator({ title: titleState })
       console.log(result)
     }
@@ -47,7 +52,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className='page' style={{ paddingTop: '8rem' }}>
+    <div className='page' style={{ paddingTop: '2rem' }}>
       <Flex direction="column" align="center" justify="space-between">
       <Input value={titleState} onChange={(e) => setTitleState(e.target.value)} type='text' bgColor="secondary" size="sm"/>
       <Button colorScheme="primary" onClick={handleCreate} isLoading={categoryCreating} marginTop="1rem">Start a new category</Button>
