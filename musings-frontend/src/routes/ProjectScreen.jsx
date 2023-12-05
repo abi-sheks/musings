@@ -4,7 +4,7 @@ import { useBoards, useCreateBoard, useUpdateBoard } from '../requests/board'
 import { useTasks} from '../requests/task'
 import { AddIcon } from '@chakra-ui/icons'
 import { Card, CardHeader, CardBody, CardFooter, Flex, Button, IconButton, Editable, EditableInput, EditablePreview, Text } from "@chakra-ui/react"
-import { CreateTaskModal } from '../components'
+import { CreateTaskModal, TaskDisplayModal } from '../components'
 
 const ProjectScreen = () => {
     const params = useParams()
@@ -44,11 +44,8 @@ const ProjectScreen = () => {
         if (board.projectID === projectID) {
             const tasksList = !tasksLoading && tasks.tasks.map(task => {
                 if (task.boardID === board.boardID) {
-                    console.log("hit")
                     return (
-                        <Text key={task.taskID}>
-                            {task.title}
-                        </Text>
+                        <TaskDisplayModal task={task}/>
                     )
                 }
             })

@@ -7,7 +7,6 @@ import useSWRMutation from "swr/mutation"
 export const useProjects = () =>
 {
     const {data, error, isLoading} = useSWR("http://localhost:8000/api/projects/", fetcher)
-    console.log(`fetched ${data}`)
     return {
         projects : data,
         error,

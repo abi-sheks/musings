@@ -32,6 +32,7 @@ const CreateProjectModal = ({category}) => {
         {
             const result = await projectCreator({ title: titleState, categoryID : category.categoryID})
             console.log(result)
+            setTitleState("")
             onClose()
         }
         catch(error)
