@@ -1,17 +1,26 @@
 import fetcher from "../fetchers/axios-fetcher"
 import creator from "../fetchers/axios-creator"
 import updater from "../fetchers/axios-updater"
+import deleter from "../fetchers/axios-deleter"
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 
 
-//tasks and notes are nested routes on the backend. So itemID will be of the form :boardID/tasks/:taskID
 
 export const useTasks= () =>
 {
     const {data, error, isLoading} = useSWR(`http://localhost:8000/api/tasks/`, fetcher)
     return {
         tasks : data,
+        error,
+        isLoading
+    }
+}
+export const useTask= (taskID) =>
+{
+    const {data, error, isLoading} = useSWR(`http://localhost:8000/api/tasks/${taskID}`, fetcher)
+    return {
+        task : data,
         error,
         isLoading
     }
@@ -34,5 +43,12 @@ export const useUpdateTask = () => {
     return {
         taskUpdater : trigger,
         taskUpdating : isMutating
+    }
+}
+export const useDeleteTask = () => {
+    const {trigger, isMutating} = useSWRMutation("http://localhost:8000/api/tasks/", deleter)
+    return {
+        taskDeleter : trigger,
+        taskDeleting : isMutating
     }
 }

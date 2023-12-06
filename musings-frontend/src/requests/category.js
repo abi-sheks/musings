@@ -1,5 +1,7 @@
 import fetcher from "../fetchers/axios-fetcher"
 import creator from "../fetchers/axios-creator"
+import updater from "../fetchers/axios-updater"
+import deleter from "../fetchers/axios-deleter"
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 
@@ -20,4 +22,21 @@ export const useCreateCategory = () => {
         categoryCreating : isMutating
     }
 }
+
+export const useUpdateCategory = () => {
+    const {trigger, isMutating} = useSWRMutation("http://localhost:8000/api/categories/", updater)
+    return {
+        categoryUpdater : trigger,
+        categoryUpdating : isMutating
+    }
+}
+
+export const useDeleteCategory = () => {
+    const {trigger, isMutating} = useSWRMutation("http://localhost:8000/api/categories/", deleter)
+    return {
+        categoryDeleter : trigger,
+        categoryDeleting : isMutating
+    }
+}
+
 

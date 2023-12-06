@@ -1,6 +1,7 @@
 import fetcher from "../fetchers/axios-fetcher"
 import creator from "../fetchers/axios-creator"
 import updater from "../fetchers/axios-updater"
+import deleter from "../fetchers/axios-deleter"
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 
@@ -29,5 +30,12 @@ export const useUpdateNote = () => {
     return {
         noteUpdater : trigger,
         noteUpdating : isMutating
+    }
+}
+export const useDeleteNote = () => {
+    const {trigger, isMutating} = useSWRMutation("http://localhost:8000/api/notes/", deleter)
+    return {
+        noteDeleter : trigger,
+        noteDeleting : isMutating
     }
 }

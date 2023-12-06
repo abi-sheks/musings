@@ -1,8 +1,10 @@
 import fetcher from "../fetchers/axios-fetcher"
 import creator from "../fetchers/axios-creator"
 import updater from "../fetchers/axios-updater"
+import deleter from "../fetchers/axios-deleter"
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
+
 
 export const useBoards = () =>
 {
@@ -26,6 +28,13 @@ export const useUpdateBoard = () => {
     return {
         boardUpdater : trigger,
         boardUpdating : isMutating
+    }
+}
+export const useDeleteBoard = () => {
+    const {trigger, isMutating} = useSWRMutation("http://localhost:8000/api/boards/", deleter)
+    return {
+        boardDeleter : trigger,
+        boardDeleting : isMutating
     }
 }
 

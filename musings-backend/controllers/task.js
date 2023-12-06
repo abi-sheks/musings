@@ -39,11 +39,11 @@ const createTask = async (req, res) => {
 const editTask = async (req, res) => {
     const owner = req.user.id
     const taskID = req.params.taskID
-    const task = await Task.update({title : req.body.title} ,{where : {userID : owner, taskID : taskID}})
+    const task = await Task.update({title : req.body.title, completed : req.body.completed} ,{where : {userID : owner, taskID : taskID}})
     if(!task) {
         res.status(StatusCodes.NOT_FOUND).json({msg : 'The task could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted task successfully", task : task})
+    res.status(StatusCodes.OK).json({msg : "Updated task successfully", task : task})
 }
 const deleteTask = async (req, res) => {
     const owner = req.user.id

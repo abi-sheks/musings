@@ -38,7 +38,7 @@ const editNote = async (req, res) => {
     if(!note) {
         res.status(StatusCodes.NOT_FOUND).json({msg : 'The note could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted note successfully", note : note})
+    res.status(StatusCodes.OK).json({msg : "Updated note successfully", note : note})
 }
 const deleteNote = async (req, res) => {
     const owner = req.user.id

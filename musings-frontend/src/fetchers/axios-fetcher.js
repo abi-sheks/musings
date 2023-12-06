@@ -1,6 +1,8 @@
 import { getToken } from "../utils";
 import axios from 'axios'
 
+
+//note : retrieve requests fetch an array with only one element, not an entire array. common pitfall
 const fetcher = (url) =>
 {
     const token = getToken()

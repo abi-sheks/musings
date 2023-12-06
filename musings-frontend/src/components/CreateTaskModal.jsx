@@ -28,7 +28,7 @@ const CreateTaskModal = ({ boardID, projectID }) => {
             return;
         }
         try {
-            const result = await taskCreator({ title: titleState, projectID : projectID, boardID : boardID})
+            const result = await taskCreator({ title: titleState, projectID : projectID, boardID : boardID, completed : false})
             console.log(result)
             setTitleState("")
             onClose()

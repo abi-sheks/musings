@@ -47,6 +47,8 @@ Board.hasMany(Task, {
     as : "parent_board",
     foreignKey : "boardID"
 });
+
+
 Task.belongsTo(Board)
 Project.hasMany(Task, {
     as : "parent_proj",

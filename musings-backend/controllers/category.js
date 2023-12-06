@@ -41,7 +41,7 @@ const deleteCategory = async (req, res) => {
     if(!category) {
         res.status(StatusCodes.NOT_FOUND).json({msg : 'The category could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted message successfully", category : category})
+    res.status(StatusCodes.OK).json({msg : "Deleted category successfully", category : category})
 }
 const editCategory = async (req, res) => {
     const owner = req.user.id
@@ -50,7 +50,7 @@ const editCategory = async (req, res) => {
     if(!category) {
         res.status(StatusCodes.NOT_FOUND).json({msg : 'The category could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted message successfully", category : category})
+    res.status(StatusCodes.OK).json({msg : "Updated category successfully", category : category})
 }
 
 module.exports = {

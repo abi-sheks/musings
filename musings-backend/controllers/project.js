@@ -14,12 +14,15 @@ const getProjects = async (req, res) => {
     }
 }
 const getProject = async (req, res) => {
+    console.log("hit")
     const owner = req.user.id
     const projectID = req.params.projectID
-    const project = await Project.findOne({where : {userID : owner, projectID : projectID}})
+    const project = await Project.findAll({where : {userID : owner, projectID : projectID}})
     if(!project) {
+        console.log(`Couldnt find `)
         res.status(StatusCodes.NOT_FOUND).json({msg : 'The project could not be found'})
     }
+    console.log(`Returned project ${project}`)
     res.status(StatusCodes.OK).json({project : project})
 }
 const createProject = async (req, res) => {
@@ -40,7 +43,7 @@ const editProject = async (req, res) => {
     if(!project) {
         res.status(StatusCodes.NOT_FOUND).json({msg : 'The project could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted project successfully", project : project})
+    res.status(StatusCodes.OK).json({msg : "Updated project successfully", project : project})
 }
 const deleteProject = async (req, res) => {
     const owner = req.user.id
