@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link as RRLink } from 'react-router-dom'
 import { useBoards, useCreateBoard, useUpdateBoard, useDeleteBoard } from '../requests/board'
 import { useProject, useDeleteProject, useUpdateProject } from '../requests/project'
 import { useTasks } from '../requests/task'
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
-import { Card, CardHeader, CardBody, CardFooter, Flex, Button, Heading, IconButton, Editable, EditableInput, EditablePreview, Text } from "@chakra-ui/react"
+import { AddIcon, ArrowBackIcon, DeleteIcon } from '@chakra-ui/icons'
+import { Card, CardHeader, CardBody, CardFooter, Flex, Button, Heading, IconButton, Editable, EditableInput, EditablePreview, Text, useToast } from "@chakra-ui/react"
 import { ItemTypes } from '../constants/dnd'
-import { CreateTaskModal, TaskDisplayModal } from '../components'
+import { CreateTaskModal, TaskDisplayModal, BoardCard } from '../components'
+import { errorToast, successToast } from '../components/Toasts'
 
 const ProjectScreen = () => {
     const params = useParams()
     const navigate = useNavigate()
+    const toast = useToast()
     const projectID = params.projectID
     const { boards, isLoading: boardsLoading, error: boardsError } = useBoards()
     const { tasks, isLoading: tasksLoading, error: tasksError } = useTasks()
@@ -37,14 +39,14 @@ const ProjectScreen = () => {
             console.log(response)
 
         } catch (error) {
+            errorToast(toast, error)
             console.log(error)
         }
     }
 
     const handleBoardChange = async (value, boardID) => {
         if (value === "") {
-            console.log("value required")
-            return;
+            throw new Error("Value required")
         }
         try {
             const response = await boardUpdater({ title: value, projectID: projectID, itemID: boardID })
@@ -52,24 +54,27 @@ const ProjectScreen = () => {
 
 
         } catch (error) {
+            errorToast(toast, error)
             console.log(error)
         }
     }
     const handleBoardDelete = async (boardID) => {
         try {
-            const response = await boardDeleter({ itemID: boardID})
+            const response = await boardDeleter({ itemID: boardID })
             console.log(response)
         } catch (error) {
+            errorToast(toast, error)
             console.log(error)
         }
     }
 
     const handleProjectChange = async (value) => {
         try {
-            const response = await projectUpdater({title : value ,itemID: projectID, categoryID : project.project[0].categoryID })
+            const response = await projectUpdater({ title: value, itemID: projectID, categoryID: project.project[0].categoryID })
             console.log(response)
             setProjectTitle(value)
         } catch (error) {
+            errorToast(toast, error)
             console.log(error)
         }
     }
@@ -79,6 +84,7 @@ const ProjectScreen = () => {
             console.log(response)
             navigate("/dashboard")
         } catch (error) {
+            errorToast(toast, error)
             console.log(error)
         }
     }
@@ -87,42 +93,30 @@ const ProjectScreen = () => {
         if (board.projectID === projectID) {
             const tasksList = !tasksLoading && tasks.tasks.map(task => {
                 if (task.boardID === board.boardID) {
-                    return (
-                        <TaskDisplayModal key={task.taskID} task={task}/>
-                    )
+                    return <TaskDisplayModal key={task.taskID} task={task} />
                 }
             })
-            return (
-                <Card key={board.boardID} bgColor="primary.600">
-                    <CardHeader display="flex" justifyContent="space-between">
-                        <Editable defaultValue={board.title} isDisabled={boardUpdating} onSubmit={(value) => handleBoardChange(value, board.boardID)}>
-                            <EditablePreview />
-                            <EditableInput />
-                        </Editable>
-                        <IconButton icon={<DeleteIcon />} onClick={() => handleBoardDelete(board.boardID)} colorScheme='teal'/>
-                    </CardHeader>
-                    <CardBody>
-                        {tasksList}
-                    </CardBody>
-                    <CardFooter>
-                        <CreateTaskModal boardID={board.boardID} projectID={projectID} />
-                    </CardFooter>
-                </Card>
-            )
+            return <BoardCard board={board}
+                handleBoardDelete={handleBoardDelete}
+                handleBoardChange={handleBoardChange}
+                tasksList={tasksList}
+                updateStatus={boardUpdating}
+                deleteStatus={boardDeleting} />
         }
     })
     return (
         <div className='page' style={{ paddingTop: "2rem" }}>
-            <Flex direction="row" justify="center">
+            <Flex direction="row" width="90%" justify="space-between" align="center" marginBottom="1rem">
+            <IconButton icon={<ArrowBackIcon />} colorScheme="teal" as={RRLink} to="/dashboard"/>
                 <Editable value={projectTitle} textAlign="center" fontSize="5xl" fontWeight="bold" isDisabled={projectUpdating} onSubmit={handleProjectChange}>
                     <EditablePreview />
                     <EditableInput onChange={(e) => setProjectTitle(e.target.value)} />
                 </Editable>
-                <IconButton icon={<DeleteIcon />} colorScheme='teal' onClick={handleProjectDelete} />
+            <IconButton icon={<DeleteIcon />} colorScheme='teal' onClick={handleProjectDelete} />
             </Flex>
             <Flex width="100%" padding="2rem">
                 {boardsList}
-                <IconButton colorScheme="primary" icon={<AddIcon />} isLoading={boardCreating} onClick={() => handleCreateBoard(projectID)} />
+                <IconButton marginLeft="2rem" colorScheme="primary" icon={<AddIcon />} isLoading={boardCreating} onClick={() => handleCreateBoard(projectID)} />
             </Flex>
         </div>
     )

@@ -1,3 +1,6 @@
 export {default as CreateProjectModal} from "./CreateProjectModal"
 export {default as CreateTaskModal} from "./CreateTaskModal"
 export {default as TaskDisplayModal} from "./TaskDisplayModal"
+export {default as CategoryCard} from "./CategoryCard"
+export {default as BoardCard} from "./BoardCard"
+export {default as ProjectLink} from "./ProjectLink"

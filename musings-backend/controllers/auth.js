@@ -10,10 +10,10 @@ const registerUser = async (req, res) => {
         }
         const user = await User.create({ username: username, password: password });
         const token = user.createJWT();
-        res.status(StatusCodes.CREATED).json({ user: { username: user.username }, token })
+        res.status(StatusCodes.CREATED).json({ user: { username: user.username }, token, message:"Registered successfully" })
     } catch (error) {
         console.log(error)
-        res.status(StatusCodes.BAD_REQUEST).json({ msg: "The request was bad" })
+        res.status(StatusCodes.BAD_REQUEST).json({ message: "The request was bad" })
     }
 }
 
@@ -32,10 +32,10 @@ const loginUser = async (req, res, next) => {
             throw new Error("Wrong password")
         }
         const token = user.createJWT();
-        res.status(StatusCodes.OK).json({ user: { username: user.username }, token })
+        res.status(StatusCodes.OK).json({ user: { username: user.username }, token, message : "Logged in successfully" })
     } catch (error){
         console.log(error)
-        res.status(StatusCodes.BAD_REQUEST).json({ msg: "The request was bad, try again", error : error })
+        res.status(StatusCodes.BAD_REQUEST).json({ message: "The request was bad, try again", error : error })
     }
 }
 

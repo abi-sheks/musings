@@ -9,7 +9,7 @@ const getCategories = async (req, res) => {
         res.status(StatusCodes.OK).json({categories : categories})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg : 'The categories could not be fetched'})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message : 'The categories could not be fetched'})
     }
 }
 const createCategory = async (req, res) => {
@@ -18,10 +18,10 @@ const createCategory = async (req, res) => {
     console.log(`Received body is ${req.body.title}`)
     try {
         const category = await Category.create(req.body)
-        res.status(StatusCodes.CREATED).json({category : category})
+        res.status(StatusCodes.CREATED).json({category : category,  message : "Category created successfully"})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.BAD_REQUEST).json({msg : "The format is bad."})
+        res.status(StatusCodes.BAD_REQUEST).json({message : "The format is bad."})
     }     
 }
 const getCategory = async (req, res) => {
@@ -29,7 +29,7 @@ const getCategory = async (req, res) => {
     const categoryID = req.params.categoryID
     const category = await Category.findOne({where : {userID : owner, categoryID : categoryID}})
     if(!category) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The category could not be found'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The category could not be found'})
     }
     res.status(StatusCodes.OK).json({category : category})
 }
@@ -39,18 +39,18 @@ const deleteCategory = async (req, res) => {
     const categoryID = req.params.categoryID
     const category = await Category.destroy({where : {userID : owner, categoryID : categoryID}})
     if(!category) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The category could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The category could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted category successfully", category : category})
+    res.status(StatusCodes.OK).json({message : "Deleted category successfully", category : category})
 }
 const editCategory = async (req, res) => {
     const owner = req.user.id
     const categoryID = req.params.categoryID
     const category = await Category.update({title : req.body.title} ,{where : {userID : owner, categoryID : categoryID}})
     if(!category) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The category could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The category could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Updated category successfully", category : category})
+    res.status(StatusCodes.OK).json({message : "Updated category successfully", category : category})
 }
 
 module.exports = {

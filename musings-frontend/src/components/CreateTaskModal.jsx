@@ -11,10 +11,12 @@ import {
     ModalCloseButton,
     Button,
     Text,
-    Input
+    Input,
+    useToast
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import { useCreateTask } from '../requests/task'
+import { errorToast, successToast } from './Toasts'
 
 
 const CreateTaskModal = ({ boardID, projectID }) => {
@@ -22,18 +24,21 @@ const CreateTaskModal = ({ boardID, projectID }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const {taskCreating, taskCreator} = useCreateTask()
 
+    const toast = useToast()
+
     const handleCreateTask = async () => {
         if (titleState === "") {
-            console.log("enter title")
-            return;
+            throw new Error("Enter title")
         }
         try {
             const result = await taskCreator({ title: titleState, projectID : projectID, boardID : boardID, completed : false})
             console.log(result)
+            successToast(toast, result)
             setTitleState("")
             onClose()
         }
         catch (error) {
+            errorToast(toast, error)
             console.log(error)
         }
 
@@ -48,7 +53,7 @@ const CreateTaskModal = ({ boardID, projectID }) => {
                     <ModalCloseButton />
                     <ModalBody>
                         <Text>Give your task a name</Text>
-                        <Input type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)} />
+                        <Input onKeyDown={async (event) => {if(event.key === "Enter") await handleCreateTask()}} type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)} />
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme='primary' variant='solid' mr={3} onClick={handleCreateTask} isLoading={taskCreating}>

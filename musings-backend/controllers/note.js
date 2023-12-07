@@ -9,7 +9,7 @@ const getNotes = async (req, res) => {
         res.status(StatusCodes.OK).json({notes : notes})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg : 'The notes could not be fetched'})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message : 'The notes could not be fetched'})
     }
 }
 const getNote = async (req, res) => {
@@ -17,7 +17,7 @@ const getNote = async (req, res) => {
     const noteID = req.params.noteID
     const note = await Note.findOne({where : {userID : owner, noteID : noteID}})
     if(!note) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The note could not be found'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The note could not be found'})
     }
     res.status(StatusCodes.OK).json({note : note})
 }
@@ -28,7 +28,7 @@ const createNote = async (req, res) => {
         res.status(StatusCodes.CREATED).json({note : note})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.BAD_REQUEST).json({msg : "The format is bad."})
+        res.status(StatusCodes.BAD_REQUEST).json({message : "The format is bad.", message : "Note created successfully"})
     }   
 }
 const editNote = async (req, res) => {
@@ -36,18 +36,18 @@ const editNote = async (req, res) => {
     const noteID = req.params.noteID
     const note = await Note.update({title : req.body.title} ,{where : {userID : owner, noteID : noteID}})
     if(!note) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The note could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The note could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Updated note successfully", note : note})
+    res.status(StatusCodes.OK).json({message : "Updated note successfully", note : note})
 }
 const deleteNote = async (req, res) => {
     const owner = req.user.id
     const noteID = req.params.noteID
     const note = await Note.destroy({where : {userID : owner, noteID : noteID}})
     if(!note) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The note could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The note could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted note successfully", note : note})
+    res.status(StatusCodes.OK).json({message : "Deleted note successfully", note : note})
 }
 
 module.exports = {

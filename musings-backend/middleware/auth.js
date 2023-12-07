@@ -17,7 +17,7 @@ const checkAuth = (req, res, next) => {
     }
     catch(error)
     {
-        res.status(StatusCodes.UNAUTHORIZED).json({"message" : "wrong password"})
+        res.status(StatusCodes.UNAUTHORIZED).json({message : "You are unauthenticated"})
     }
 }
 

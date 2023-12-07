@@ -2,6 +2,7 @@ import fetcher from "../fetchers/axios-fetcher"
 import creator from "../fetchers/axios-creator"
 import deleter from "../fetchers/axios-deleter"
 import updater from "../fetchers/axios-updater"
+import { compareID } from "../utils"
 import useSWR from 'swr'
 import useSWRMutation from "swr/mutation"
 
@@ -9,6 +10,7 @@ import useSWRMutation from "swr/mutation"
 
 export const useProjects = () => {
     const { data, error, isLoading } = useSWR("http://localhost:8000/api/projects/", fetcher)
+    !isLoading && data.projects.sort(compareID)
     return {
         projects: data,
         error,

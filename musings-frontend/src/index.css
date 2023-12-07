@@ -5,3 +5,8 @@
     align-items: center;
     background-color: #EEEEEE;
 }
+
+.hover-change:hover {
+    background-color: rgb(45 212 191);
+    cursor: pointer;
+}

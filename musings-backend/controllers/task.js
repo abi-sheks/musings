@@ -12,7 +12,7 @@ const getTasks = async (req, res) => {
         res.status(StatusCodes.OK).json({tasks : tasks})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg : 'The tasks could not be fetched'})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message : 'The tasks could not be fetched'})
     }
 }
 
@@ -21,7 +21,7 @@ const getTask = async (req, res) => {
     const taskID = req.params.taskID
     const task = await Task.findOne({where : {userID : owner, taskID : taskID}})
     if(!task) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The task could not be found'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The task could not be found'})
     }
     res.status(StatusCodes.OK).json({task : task})
 }
@@ -30,10 +30,10 @@ const createTask = async (req, res) => {
     //need projectID and boardID as well, given through body
     try {
         const task = await Task.create(req.body)
-        res.status(StatusCodes.CREATED).json({task : task})
+        res.status(StatusCodes.CREATED).json({task : task, message : "Task created successfully"})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.BAD_REQUEST).json({msg : "The format is bad."})
+        res.status(StatusCodes.BAD_REQUEST).json({message : "The format is bad."})
     }   
 }
 const editTask = async (req, res) => {
@@ -41,18 +41,18 @@ const editTask = async (req, res) => {
     const taskID = req.params.taskID
     const task = await Task.update({title : req.body.title, completed : req.body.completed} ,{where : {userID : owner, taskID : taskID}})
     if(!task) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The task could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The task could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Updated task successfully", task : task})
+    res.status(StatusCodes.OK).json({message : "Updated task successfully", task : task})
 }
 const deleteTask = async (req, res) => {
     const owner = req.user.id
     const taskID = req.params.taskID
     const task = await Task.destroy({where : {userID : owner, taskID : taskID}})
     if(!task) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The task could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The task could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted task successfully", task : task})
+    res.status(StatusCodes.OK).json({message : "Deleted task successfully", task : task})
 }
 
 module.exports = {

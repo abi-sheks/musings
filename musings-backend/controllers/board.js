@@ -9,7 +9,7 @@ const getBoards = async (req, res) => {
         res.status(StatusCodes.OK).json({boards : boards})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg : 'The boards could not be fetched'})
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message : 'The boards could not be fetched'})
     }
 }
 const getBoard = async (req, res) => {
@@ -17,7 +17,7 @@ const getBoard = async (req, res) => {
     const boardID = req.params.boardID
     const board = await Board.findOne({where : {userID : owner, boardID : boardID}})
     if(!board) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The board could not be found'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The board could not be found'})
     }
     res.status(StatusCodes.OK).json({board : board})
 }
@@ -26,10 +26,10 @@ const createBoard = async (req, res) => {
     req.body.userID = req.user.id
     try {
         const board = await Board.create(req.body)
-        res.status(StatusCodes.CREATED).json({board : board})
+        res.status(StatusCodes.CREATED).json({board : board,  message : "Board created successfully"})
     } catch(error) {
         console.log(error)
-        res.status(StatusCodes.BAD_REQUEST).json({msg : "The format is bad."})
+        res.status(StatusCodes.BAD_REQUEST).json({message : "The format is bad."})
     }   
 }
 const editBoard = async (req, res) => {
@@ -37,18 +37,18 @@ const editBoard = async (req, res) => {
     const boardID = req.params.boardID
     const board = await Board.update({title : req.body.title} ,{where : {userID : owner, boardID : boardID}})
     if(!board) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The board could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The board could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Updated board successfully", board : board})
+    res.status(StatusCodes.OK).json({message : "Updated board successfully", board : board})
 }
 const deleteBoard = async (req, res) => {
     const owner = req.user.id
     const boardID = req.params.boardID
     const board = await Board.destroy({where : {userID : owner, boardID : boardID}})
     if(!board) {
-        res.status(StatusCodes.NOT_FOUND).json({msg : 'The board could not be found, or you dont have permissions'})
+        res.status(StatusCodes.NOT_FOUND).json({message : 'The board could not be found, or you dont have permissions'})
     }
-    res.status(StatusCodes.OK).json({msg : "Deleted board successfully", board : board})
+    res.status(StatusCodes.OK).json({message : "Deleted board successfully", board : board})
 }
 
 module.exports = {

@@ -1,8 +1,9 @@
 import React from 'react'
-import { Card, CardHeader, CardBody, Input, Heading, Text, CardFooter, Button } from '@chakra-ui/react'
+import { Card, CardHeader, CardBody, Input, Heading, Text, CardFooter, Button, useToast } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useState } from 'react'
+import { errorToast, successToast } from '../components/Toasts'
 
 const RegisterScreen = () => {
   const [usernameState, setUsernameState] = useState("")  
@@ -10,6 +11,7 @@ const RegisterScreen = () => {
   const [confirmPasswordState, setConfirmPasswordState] = useState("") 
 
   const navigate = useNavigate()
+  const toast = useToast()
   
   
   const handleSubmit = async () => {
@@ -17,23 +19,22 @@ const RegisterScreen = () => {
     {
         if(!confirmPasswordState || !passwordState || !usernameState)
         {
-            console.log("enter all")
-            return;
+            throw new Error("Please enter all your details")
         }
         if(confirmPasswordState !== passwordState)
         {
-            console.log("Enter properly")
-            return;
+            throw new Error("Password not matching")
         }
         const response = (await axios.post("http://localhost:8000/api/auth/register/", JSON.stringify({username : usernameState, password : passwordState}), {headers : {"Content-type" : "application/json"}})).data
         console.log(response)
         localStorage.setItem("token", response.token)
         localStorage.setItem("user", response.user.username)
+        successToast(toast, response)
         navigate("/dashboard")
     }
     catch(error)
     {
-        console.log(error)
+      errorToast(toast, error)
     }
 
   }

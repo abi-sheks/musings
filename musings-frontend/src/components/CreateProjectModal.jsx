@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import {
     IconButton,
-    useDisclosure, 
+    useDisclosure,
     Modal,
     ModalOverlay,
     ModalContent,
@@ -10,39 +10,41 @@ import {
     ModalBody,
     ModalCloseButton,
     Button,
-    Text, 
-    Input
+    Text,
+    Input,
+    useToast
 } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import { useCreateProject } from '../requests/project'
+import { errorToast, successToast } from './Toasts'
 
 
-const CreateProjectModal = ({category}) => {
+const CreateProjectModal = ({ category }) => {
     const [titleState, setTitleState] = useState("")
-    const {isOpen, onOpen, onClose} = useDisclosure()
-    const {projectCreating, projectCreator} = useCreateProject()
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { projectCreating, projectCreator } = useCreateProject()
 
-    const handleCreate = async () => {
-        if(titleState === "")
-        {
-            console.log("enter title")
-            return;
-        }
-        try
-        {
-            const result = await projectCreator({ title: titleState, categoryID : category.categoryID})
+    const toast = useToast()
+
+    const handleCreateProject = async () => {
+        try {
+            if (titleState === "") {
+                throw new Error("Enter title")
+            }
+            const result = await projectCreator({ title: titleState, categoryID: category.categoryID })
             console.log(result)
+            successToast(toast, result)
             setTitleState("")
             onClose()
         }
-        catch(error)
-        {
+        catch (error) {
+            errorToast(toast, error)
             console.log(error)
         }
 
     }
     return (
-        <div style={{marginTop : "1rem"}}>
+        <div style={{ marginTop: "1rem" }} onEnter>
             <IconButton colorScheme="primary" icon={<AddIcon />} onClick={onOpen} />
             <Modal isOpen={isOpen} onClose={onClose} size="lg">
                 <ModalOverlay />
@@ -51,10 +53,10 @@ const CreateProjectModal = ({category}) => {
                     <ModalCloseButton />
                     <ModalBody>
                         <Text>Give your project a name</Text>
-                        <Input type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)}/>
+                        <Input onKeyDown={async (event) => { if (event.key === "Enter") await handleCreateProject() }} type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)} />
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme='primary' variant='solid' mr={3} onClick={handleCreate} isLoading={projectCreating}>
+                        <Button colorScheme='primary' variant='solid' mr={3} onClick={handleCreateProject} isLoading={projectCreating}>
                             Create
                         </Button>
                         <Button colorScheme='primary' variant='outline' mr={3} onClick={onClose}>

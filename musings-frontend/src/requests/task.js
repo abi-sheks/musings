@@ -4,12 +4,14 @@ import updater from "../fetchers/axios-updater"
 import deleter from "../fetchers/axios-deleter"
 import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
+import { compareID } from "../utils"
 
 
 
 export const useTasks= () =>
 {
     const {data, error, isLoading} = useSWR(`http://localhost:8000/api/tasks/`, fetcher)
+    !isLoading && data.tasks.sort(compareID)
     return {
         tasks : data,
         error,

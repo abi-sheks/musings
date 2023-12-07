@@ -1,46 +1,56 @@
 import React, { useState } from 'react'
-import { Link as RRLink } from 'react-router-dom'
+import { Link as RRLink, useNavigate } from 'react-router-dom'
 import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory } from '../requests/category'
 import { useProjects } from '../requests/project'
 import { DeleteIcon } from '@chakra-ui/icons'
-import { Heading, Button, Grid, GridItem, Flex, IconButton, Input, Link, Editable, EditablePreview, EditableInput, Tooltip } from '@chakra-ui/react'
-import { CreateProjectModal } from '../components'
+import { Heading, Button, Grid, Flex, Input, useToast } from '@chakra-ui/react'
+import { CategoryCard, ProjectLink } from '../components'
+import { errorToast, successToast } from '../components/Toasts'
 
 const Dashboard = () => {
-  const fetcher = (...args) => fetch(...args).then(res => res.json())
   const { categories, error: categoryError, isLoading: categoryLoading } = useCategories()
   const { projects, error: projectError, isLoading: projectLoading } = useProjects()
   const { categoryCreator, categoryCreating } = useCreateCategory()
   const { categoryUpdater, categoryUpdating } = useUpdateCategory()
   const { categoryDeleter, categoryDeleting } = useDeleteCategory()
 
+  const toast = useToast()
+  const navigate = useNavigate()
+
   const [titleState, setTitleState] = useState("")
 
   //handler
+  const handleLogout = async () => {
+    localStorage.setItem("token", "")
+    localStorage.setItem("username", "")
+    navigate("/")
+  }
   const handleCreateCategory = async () => {
     try {
       if (titleState === "") {
-        console.log("enter title")
-        return;
+        throw new Error("Enter a title")
       }
       const result = await categoryCreator({ title: titleState })
+      setTitleState("")
+      successToast(toast, result)
       console.log(result)
     }
     catch (error) {
+      errorToast(toast, error)
       console.log(error)
     }
   }
 
   const handleCategoryChange = async (value, categoryID) => {
-    if (value === "") {
-      console.log("value required")
-      return;
-    }
     try {
+      if (value === "") {
+        throw new Error("Value required")
+      }
       const response = await categoryUpdater({ title: value, itemID: categoryID })
       console.log(response)
 
     } catch (error) {
+      errorToast(toast, error)
       console.log(error)
     }
   }
@@ -51,6 +61,7 @@ const Dashboard = () => {
       console.log(response)
 
     } catch (error) {
+      errorToast(toast, error)
       console.log(error)
     }
   }
@@ -60,28 +71,12 @@ const Dashboard = () => {
     const projectsList = !projectLoading && projects.projects.map(project => {
       if (project.categoryID === category.categoryID) {
         return (
-          <Link color="secondary" as={RRLink} to={`projects/${project.projectID}`}>
-            {project.title}
-          </Link>
+          <ProjectLink project={project} />
         )
       }
     })
     return (
-      <GridItem key={category.categoryID} bgColor="tertiary" borderRadius="1rem" padding="1rem" colSpan={1}>
-        <Flex direction="row" justify="right">
-          <Tooltip label="Delete category">
-            <IconButton icon={<DeleteIcon />} isLoading={categoryDeleting} colorScheme='teal' onClick={() => handleDeleteCategory(category.categoryID)} />
-          </Tooltip>
-        </Flex>
-        <Editable defaultValue={category.title} textAlign="center" color="secondary" fontSize="3xl" fontWeight="bold" isDisabled={categoryUpdating} onSubmit={(value) => handleCategoryChange(value, category.categoryID)}>
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
-        <Flex align="center" direction="column">
-          {projectsList}
-          <CreateProjectModal category={category} />
-        </Flex>
-      </GridItem>
+      <CategoryCard category={category} handleCategoryChange={handleCategoryChange} handleDeleteCategory={handleDeleteCategory} projectsList={projectsList} updateStatus={categoryUpdating} deleteStatus={categoryDeleting} />
     )
   })
 
@@ -89,10 +84,10 @@ const Dashboard = () => {
   return (
     <div className='page' style={{ paddingTop: '2rem', paddingLeft: '2rem', paddingRight: "2rem" }}>
       <Flex direction="column" align="center" justify="space-between">
-        <Input value={titleState} onChange={(e) => setTitleState(e.target.value)} type='text' bgColor="secondary" size="sm" />
+        <Input onKeyDown={async (event) => { if (event.key === "Enter") await handleCreateCategory() }} value={titleState} onChange={(e) => setTitleState(e.target.value)} type='text' bgColor="secondary" size="sm" />
         <Button colorScheme="primary" onClick={handleCreateCategory} isLoading={categoryCreating} marginTop="1rem">Start a new category</Button>
       </Flex>
-      <Heading marginTop='1rem'>Your projects</Heading>
+      <Heading marginTop='1rem'>Your projects, categorized.</Heading>
       <Grid
         marginTop='2rem'
         width='100%'
@@ -102,6 +97,7 @@ const Dashboard = () => {
       >
         {categoryList}
       </Grid>
+      <Button position="absolute" top="2rem" left="2rem" colorScheme='primary' variant="solid" onClick={handleLogout}>Logout</Button>
     </div>
   )
 }
