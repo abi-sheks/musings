@@ -53,7 +53,7 @@ const CreateProjectModal = ({ category }) => {
                     <ModalCloseButton />
                     <ModalBody>
                         <Text>Give your project a name</Text>
-                        <Input onKeyDown={async (event) => { if (event.key === "Enter") await handleCreateProject() }} type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)} />
+                        <Input autoFocus onKeyDown={async (event) => { if (event.key === "Enter") await handleCreateProject() }} type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)} />
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme='primary' variant='solid' mr={3} onClick={handleCreateProject} isLoading={projectCreating}>

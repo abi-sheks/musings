@@ -84,7 +84,7 @@ const Dashboard = () => {
   return (
     <div className='page' style={{ paddingTop: '2rem', paddingLeft: '2rem', paddingRight: "2rem" }}>
       <Flex direction="column" align="center" justify="space-between">
-        <Input onKeyDown={async (event) => { if (event.key === "Enter") await handleCreateCategory() }} value={titleState} onChange={(e) => setTitleState(e.target.value)} type='text' bgColor="secondary" size="sm" />
+        <Input autoFocus onKeyDown={async (event) => { if (event.key === "Enter") await handleCreateCategory() }} value={titleState} onChange={(e) => setTitleState(e.target.value)} type='text' bgColor="secondary" size="sm" />
         <Button colorScheme="primary" onClick={handleCreateCategory} isLoading={categoryCreating} marginTop="1rem">Start a new category</Button>
       </Flex>
       <Heading marginTop='1rem'>Your projects, categorized.</Heading>

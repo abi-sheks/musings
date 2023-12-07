@@ -53,7 +53,7 @@ const CreateTaskModal = ({ boardID, projectID }) => {
                     <ModalCloseButton />
                     <ModalBody>
                         <Text>Give your task a name</Text>
-                        <Input onKeyDown={async (event) => {if(event.key === "Enter") await handleCreateTask()}} type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)} />
+                        <Input autoFocus onKeyDown={async (event) => {if(event.key === "Enter") await handleCreateTask()}} type='text' value={titleState} onChange={(e) => setTitleState(e.target.value)} />
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme='primary' variant='solid' mr={3} onClick={handleCreateTask} isLoading={taskCreating}>
